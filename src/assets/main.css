@@ -1,0 +1,40 @@
+body {
+  /* font-family: Arial, sans-serif; */
+  margin: 0;
+  padding: 0;
+  /* background-color: #f0f0f0; */
+  /* color: #333; */
+  
+}
+
+/* You can set a background image if desired */
+/* body {
+  background-image: url('your-background-image.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+} */
+
+/* Apply global styles to anchor tags (links) */
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Define default styles for headings */
+h1 {
+  font-size: 24px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+h3 {
+  font-size: 18px;
+  margin: 0px;
+}

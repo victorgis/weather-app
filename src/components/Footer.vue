@@ -21,9 +21,7 @@
       <a href="https://www.youtube.com/@victoressang"
         ><i class="fa fa-youtube" aria-hidden="true"></i
       ></a>
-      <a href="https://splendorous-pavlova-b3dd13.netlify.app/"
-        ><i class="fas fa-globe-africa"></i
-      ></a>
+      <a href="https://veespatial.netlify.app/"><i class="fas fa-globe-africa"></i></a>
     </div>
     <div>
       <p>

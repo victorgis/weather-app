@@ -20,10 +20,13 @@
             <p>
               <b>
                 <!-- <b>Today's Date & Time:</b>  -->
-                {{ date ? date : 'Thu Oct 12 2023' }},
-                {{ time ? time : 'Thu 14:21:40 GMT+0100' }}
+                {{ date ? date : 'Thu Oct 12 2023' }}
               </b>
             </p>
+            <p>
+              <b> {{ time ? time : 'Thu 14:21:40 GMT+0100' }}</b>
+            </p>
+
             <!-- <p><b>Today's Time:</b> {{ time ? time : 'Thu 14:21:40 GMT+0100' }}</p> -->
           </div>
           <div class="search">
@@ -34,7 +37,7 @@
                 id="search-input"
                 placeholder="Search Location"
               />
-              <button @click="handleSearchTerm()" type="submit">Search</button>
+              <button @click="handleSearchTerm($event)" type="submit">Search</button>
             </form>
           </div>
         </div>
@@ -53,13 +56,13 @@
             <span>{{ humidity ? humidity + '%' : '30%' }}</span>
           </div>
           <div class="box">
-            <span><b>Temperature</b></span>
+            <span class="temp"><b>Temperature</b></span>
             <span>{{ celsiusTemperature ? celsiusTemperature + ' °C' : '35.4 °C' }}</span>
           </div>
-        </div>
+          <!-- </div> -->
 
-        <!-- second boxes  -->
-        <div class="factors-grid-container">
+          <!-- second boxes  -->
+          <!-- <div class="factors-grid-container"> -->
           <div class="box">
             <span><b>Visibility</b></span>
             <span>{{ visibility ? visibility / 1000 + ' km' : '5km' }}</span>
@@ -72,17 +75,17 @@
             <span><b>Wind Speed</b></span>
             <span>{{ windSpeed ? windSpeed + ' m/s' : '3.5 m/s' }}</span>
           </div>
-        </div>
+          <!-- </div> -->
 
-        <!-- third boxes  -->
-        <div class="factors-grid-container">
-          <div class="box">
+          <!-- third boxes  -->
+          <!-- <div class="factors-grid-container"> -->
+          <div class="box none">
             <span><b>Country Code</b></span>
             <span>{{ countryCode ? countryCode : 'NG' }}</span>
           </div>
           <div class="box">
             <span><b>Timezone</b></span>
-            <span>{{ timeZoneOffset ? 'GMT' + timeZoneOffset : 'GMT +01:00' }}</span>
+            <span class="temp">{{ timeZoneOffset ? 'GMT' + timeZoneOffset : 'GMT +01:00' }}</span>
           </div>
           <div class="box">
             <span><b>Wind Deg</b></span>
@@ -97,9 +100,9 @@
 </template>
 
 <script>
-import Header from './components/Header.vue'
-import Footer from './components/Footer.vue'
-import Loader from './components/Loader.vue'
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
+import Loader from '@/components/Loader.vue'
 import axios from 'axios'
 export default {
   name: 'WeatherAppApp',
@@ -135,7 +138,8 @@ export default {
       countryCode: '',
       timeZoneOffset: '',
       geoLat: '',
-      geoLong: ''
+      geoLong: '',
+      formattedTime: ''
     }
   },
 
@@ -189,8 +193,8 @@ export default {
         // Format the local time according to the specified format
         const options = {
           hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
+          minute: '2-digit'
+          // second: '2-digit'
           // timeZoneName: 'short'
         }
 
@@ -238,23 +242,41 @@ export default {
       this.date = now.toLocaleString('en-US', dateOptions)
       // this.time = convertTimeToCustomFormat(this.timeZoneOffset)
       // const timeZoneOffset = '+01:00'
-      const formattedTime = getLocalTimeFormatted(this.timeZoneOffset)
-      console.log(formattedTime) // Example output: "19:08:34 GMT +0100"
+      this.time = getLocalTimeFormatted(this.timeZoneOffset)
 
       this.isLoading = false
     },
 
-    async handleSearchTerm() {
-      this.isLoading = true
-      const { data } = await axios.get(
-        `https://api.openweathermap.org/geo/1.0/direct?q=${this.searchCity}&limit=5&appid=ee914cdd33ab3acb4346421f7daf6fd4`
-      )
-      this.latitude = data[0].lat
-      this.longitude = data[0].lon
+    async handleSearchTerm(e) {
+      this.search = e.target.value
 
-      if (data) {
-        this.loadWeather()
+      console.log('this.search', this.search)
+      this.isLoading = true
+      try {
+        const { data } = await axios.get(
+          `https://api.openweathermap.org/geo/1.0/direct?q=${this.searchCity}&limit=5&appid=ee914cdd33ab3acb4346421f7daf6fd4`
+        )
+
+        console.log('data', data)
+        this.latitude = data[0].lat
+        this.longitude = data[0].lon
+
+        if (data) {
+          this.loadWeather()
+        }
+      } catch (error) {
+        alert('City not found!')
+        console.log(
+          'lat & long error',
+          this.latitude
+            ? this.latitude
+            : 'lat not found' + '&' + this.longitude
+            ? this.longitude
+            : 'long not found',
+          +'error' + error
+        )
       }
+
       this.isLoading = false
     }
   },
@@ -284,13 +306,13 @@ div.full-app {
 .column1 {
   background-color: #1d3557; /* Just for visualization */
   color: #f1faee;
-  padding: 20px; /* Optional styling for the first column */
+  padding: 10px; /* Optional styling for the first column */
 }
 
 .column2 {
   background-color: #f1faee;
   color: #1d3557;
-  padding: 20px;
+  padding: 10px;
 }
 .column1 span {
   display: block;
@@ -315,6 +337,8 @@ div.full-app {
   /* height: 300px; */
 }
 
+/* Media query for mobile responsiveness */
+
 .search-form {
   margin: 16px 0px;
 }
@@ -334,8 +358,8 @@ button {
 .factors-grid-container {
   margin: 40px 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Create three equal-width columns */
-  gap: 20px; /* Optional gap between boxes */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .box {
@@ -344,5 +368,43 @@ button {
 }
 .box span {
   display: block;
+}
+
+@media (max-width: 768px) {
+  .grid-container {
+    margin: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1.8fr; /* This sets the column widths */
+  }
+  .factors-grid-container {
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Create two equal-width columns */
+    gap: 10px; /* Optional gap between boxes */
+  }
+
+  .cloud-size {
+    font-size: 80px;
+  }
+
+  .name-weather {
+    font-size: 20px;
+  }
+
+  .none {
+    display: none;
+  }
+
+  .name-location {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .date-time,
+  .search {
+    text-align: left;
+  }
+  .temp {
+    font-size: 13px;
+  }
 }
 </style>

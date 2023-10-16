@@ -10,7 +10,7 @@
         <p class="name-weather">{{ weather ? weather : 'cloudy' }}</p>
         <span id="newIcon" class="cloud-size"><i class="fa-solid fa-cloud"></i></span>
         <p class="name-weather">{{ celsiusTemperature ? celsiusTemperature + ' °C' : '50.5°C' }}</p>
-        <p class="">Feels like: {{ feelsLike ? feelsLike + ' °C' : '50.5°C' }}</p>
+        <p class="feelsLike">Feels like: {{ feelsLike ? feelsLike + ' °C' : '50.5°C' }}</p>
       </div>
 
       <!-- Second Column  -->
@@ -226,6 +226,16 @@ export default {
         icon.innerHTML = `<i class="fa-solid fa-cloud-rain"></i>`
       } else if (this.weather == 'moderate rain') {
         icon.innerHTML = `<i class="fa-solid fa-cloud-sun-rain"></i>`
+      } else if (this.weather == 'broken clouds') {
+        icon.innerHTML = `<i class="fa-solid fa-cloud-sun"></i>`
+      } else if (this.weather == 'clear sky') {
+        icon.innerHTML = `<i class="fa-solid fa-sun"></i>`
+      } else if (this.weather == 'overcast clouds') {
+        icon.innerHTML = `<i class="fa-brands fa-cloudflare"></i>`
+      } else if (this.weather == 'thunderstorm with heavy rain') {
+        icon.innerHTML = `<i class="fa-solid fa-cloud-showers-heavy"></i>`
+      } else {
+        icon.innerHTML = `<i class="fa-solid fa-cloud"></i>`
       }
 
       // convert api timezone to real timezone
@@ -332,9 +342,8 @@ div.full-app {
 
 .search-grid-container {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* This sets the column widths */
+  grid-template-columns: 1fr 1fr;
   border-bottom: #1d3557 1px solid;
-  /* height: 300px; */
 }
 
 /* Media query for mobile responsiveness */
@@ -383,6 +392,10 @@ button {
     gap: 10px; /* Optional gap between boxes */
   }
 
+  .search-grid-container {
+    display: block;
+  }
+
   .cloud-size {
     font-size: 80px;
   }
@@ -403,8 +416,17 @@ button {
   .search {
     text-align: left;
   }
+  button {
+    background: #1d3557;
+    color: #f1faee;
+    padding: 4px;
+    border-radius: 4px;
+  }
   .temp {
     font-size: 13px;
+  }
+  .feelsLike {
+    font-size: 12px;
   }
 }
 </style>
